@@ -1,0 +1,2 @@
+* DVD rental store
+- DVD rental store that uses the [[https://github.com/devrimgunduz/pagila][Pagila]] Postgres database.
