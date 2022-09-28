@@ -27,3 +27,6 @@
 /checkouts
 /classes
 /target
+
+# Ignore config file
+config.edn
