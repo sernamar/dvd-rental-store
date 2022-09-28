@@ -28,4 +28,4 @@
   (b/uber {:class-dir class-dir
            :uber-file uber-file
            :basis basis
-           :main 'dvd-rental-store.main}))
+           :main 'dvd-rental-store.server}))

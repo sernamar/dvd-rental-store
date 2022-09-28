@@ -1,8 +1,13 @@
 {:paths ["src" "resources"]
- :deps {org.clojure/clojure {:mvn/version "1.11.1"}}
+ :deps {org.clojure/clojure {:mvn/version "1.11.1"}
+        ring/ring {:mvn/version "1.9.5"}
+        ring/ring-json {:mvn/version "0.5.1"}
+        compojure/compojure {:mvn/version "1.7.0"}
+        org.clojure/data.json {:mvn/version "2.4.0"}
+        org.clojure/tools.logging {:mvn/version "1.2.4"}}
  :aliases
- {:run-m {:main-opts ["-m" "dvd-rental-store.main"]}
-  :run-x {:ns-default dvd-rental-store.main
+ {:run-m {:main-opts ["-m" "dvd-rental-store.server"]}
+  :run-x {:ns-default dvd-rental-store.server
           :exec-fn greet
           :exec-args {:name "Clojure"}}
   :build {:deps {io.github.seancorfield/build-clj

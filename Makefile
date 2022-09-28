@@ -1,14 +1,57 @@
-.PHONY: clean run test uberjar
+# ----------------------- #
+# Setup                   #
+# ----------------------- #
+.EXPORT_ALL_VARIABLES:
 
+include .env
 
-clean:
-	clojure -T:build clean
+# ----------------------- #
+# Variables               #
+# ----------------------- #
 
-run:
-	clojure -M -m dvd-rental-store.main
+.PHONY: build start stop restart docker-clean ls list-apps logs ps status shell
 
-test:
-	clojure -X:test
+DOCKER_COMPOSE = docker compose
+DOCKER_COMPOSE_FILE = docker-compose.yml
 
-uberjar: clean
-	clojure -T:build uberjar
+# ----------------------- #
+# Managing the stack      #
+# ----------------------- #
+
+build:
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) build $(a)
+
+start:
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up -d $(a)
+
+stop:
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) stop $(a)
+
+restart: stop start
+
+docker-clean:
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) down --remove-orphans
+
+# ----------------------- #
+# Querying the stack      #
+# ----------------------- #
+
+ls: list-apps
+
+list-apps:
+	@$(DOCKER_COMPOSE) config --services
+
+logs:
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) logs --tail=100 -f $(a)
+
+ps: status
+
+status:
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) ps
+
+# ----------------------- #
+# Managing data           #
+# ----------------------- #
+
+shell:
+	docker exec -it $(a) bash
