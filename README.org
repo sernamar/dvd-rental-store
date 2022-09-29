@@ -1,2 +1,12 @@
 * DVD rental store
-- DVD rental store that uses the [[https://github.com/devrimgunduz/pagila][Pagila]] Postgres database.
+DVD rental store that uses the [[https://github.com/devrimgunduz/pagila][Pagila]] Postgres database.
+** Database configuration
+Create a file named ~config.edn~ containing a map with the key ~:db-params~ whose value is a map containing the Postgres configuration parameters:
+#+begin_src clojure
+  {:db-params {:dbtype "postgres"
+	       :dbname "dbname"
+	       :port "port"
+	       :username "username"
+	       :password "password"
+	       :dataSourceProperties {:socketTimeout 30}}}
+#+end_src
