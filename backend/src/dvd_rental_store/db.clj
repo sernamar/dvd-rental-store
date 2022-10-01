@@ -1,5 +1,6 @@
 (ns dvd-rental-store.db
-  (:require [next.jdbc :as jdbc]))
+  (:require [next.jdbc :as jdbc]
+            [next.jdbc.result-set :as rs]))
 
 ;;; ------------- ;;;
 ;;; DB connection ;;;
@@ -15,7 +16,7 @@
   [db-params]
   (-> db-params
       jdbc/get-datasource
-      jdbc/get-connection))
+      (jdbc/with-options {:builder-fn rs/as-unqualified-lower-maps})))
 
 (def conn (get-connection db-params))
 
