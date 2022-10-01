@@ -20,14 +20,14 @@
 
 (def conn (get-connection db-params))
 
-;;; ------------ ;;;
-;;; DB functions ;;;
-;;; ------------ ;;;
+;;; ----------------- ;;;
+;;; Revenue functions ;;;
+;;; ----------------- ;;;
 
 (defn revenue
   "Returns the total revenue of all stores."
   [conn]
-  (jdbc/execute-one! conn ["SELECT COUNT(amount) AS total_revenue FROM payment"]))
+  (jdbc/execute-one! conn ["SELECT SUM(amount) AS total_revenue FROM payment"]))
 
 (defn revenue-by-month
   "Returns the revenue by month of all stores."
@@ -35,7 +35,7 @@
   (jdbc/execute! conn ["
 SELECT
   EXTRACT(MONTH FROM payment_date)::INTEGER AS month,
-  COUNT(amount) AS revenue
+  SUM(amount) AS revenue
 FROM payment
 GROUP BY month
 ORDER BY month"]))
@@ -46,7 +46,7 @@ ORDER BY month"]))
   (jdbc/execute! conn ["
 SELECT
   EXTRACT(WEEK FROM payment_date)::INTEGER AS week,
-  COUNT(amount) AS revenue
+  SUM(amount) AS revenue
 FROM payment
 GROUP BY week
 ORDER BY week"]))
@@ -58,7 +58,7 @@ ORDER BY week"]))
 SELECT 
   EXTRACT(MONTH FROM payment_date)::INTEGER AS month,
   EXTRACT(DAY FROM payment_date)::INTEGER AS day,
-  COUNT(amount) AS revenue
+  SUM(amount) AS revenue
 FROM payment
 GROUP BY month, day
 ORDER BY month, day
@@ -72,7 +72,7 @@ SELECT
   cu.store_id, 
   ci.city,
   co.country,
-  COUNT(p.amount) AS revenue
+  SUM(p.amount) AS revenue
 FROM payment AS p
 LEFT JOIN customer AS cu ON p.customer_id = cu.customer_id
 LEFT JOIN store AS s ON cu.store_id = s.store_id
