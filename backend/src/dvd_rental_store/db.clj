@@ -98,7 +98,7 @@ GROUP BY cu.store_id, ci.city, co.country
 ;;; -------------- ;;;
 
 (defn top-ten-films-by-volume
-  "Return the top-ten most rented films."
+  "Returns the top-ten most rented films."
   [conn]
   (jdbc/execute! conn ["
 SELECT
@@ -118,7 +118,7 @@ LIMIT 10
 "]))
 
 (defn top-ten-films-by-revenue
-  "Return the top-ten films that generate more revenue."
+  "Returns the top-ten films that generate more revenue."
   [conn]
   (jdbc/execute! conn ["
 SELECT
@@ -135,4 +135,18 @@ LEFT JOIN film AS f ON
 GROUP BY f.film_id, f.title
 ORDER BY revenue DESC
 LIMIT 10
+"]))
+
+(defn number-of-films-by-category
+  "Returns the number of films in each category."
+  [conn]
+  (jdbc/execute! conn ["
+SELECT
+    c.name as category,
+    COUNT(fc.film_id) AS number_of_films
+FROM film_category AS fc
+LEFT JOIN category AS C
+    USING(category_id)
+GROUP BY category
+ORDER BY number_of_films DESC
 "]))

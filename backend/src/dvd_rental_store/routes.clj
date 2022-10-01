@@ -1,6 +1,6 @@
 (ns dvd-rental-store.routes
   (:require [dvd-rental-store.db :refer [conn revenue revenue-by-month revenue-by-week revenue-by-day revenue-by-store
-                                         top-ten-films-by-volume top-ten-films-by-revenue]]
+                                         top-ten-films-by-volume top-ten-films-by-revenue number-of-films-by-category]]
             [compojure.core :refer [routes context GET]]
             [compojure.route :as route]
             [ring.util.response :refer [response not-found]]
@@ -17,7 +17,8 @@
 (defn film-routes [conn]
   (context "/film" []
            (GET "/most-popular" [] (response (top-ten-films-by-volume conn)))
-           (GET "/most-revenue" [] (response (top-ten-films-by-revenue conn)))))
+           (GET "/most-revenue" [] (response (top-ten-films-by-revenue conn)))
+           (GET "/number-by-category" [] (response (number-of-films-by-category conn)))))
 
 (defn all-routes [conn]
   (routes
