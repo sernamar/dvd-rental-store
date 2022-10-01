@@ -102,7 +102,6 @@ GROUP BY cu.store_id, ci.city, co.country
   [conn]
   (jdbc/execute! conn ["
 SELECT
-    f.film_id,
     f.title,
     COUNT(p.rental_id) AS volume
 FROM payment AS p
@@ -112,7 +111,7 @@ LEFT JOIN inventory AS i ON
     r.inventory_id = i.inventory_id
 LEFT JOIN film AS f ON
     i.film_id = f.film_id
-GROUP BY f.film_id, f.title
+GROUP BY f.title
 ORDER BY volume DESC
 LIMIT 10
 "]))
@@ -122,7 +121,6 @@ LIMIT 10
   [conn]
   (jdbc/execute! conn ["
 SELECT
-    f.film_id,
     f.title,
     SUM(p.amount) AS revenue
 FROM payment AS p
@@ -132,7 +130,7 @@ LEFT JOIN inventory AS i ON
     r.inventory_id = i.inventory_id
 LEFT JOIN film AS f ON
     i.film_id = f.film_id
-GROUP BY f.film_id, f.title
+GROUP BY f.title
 ORDER BY revenue DESC
 LIMIT 10
 "]))
