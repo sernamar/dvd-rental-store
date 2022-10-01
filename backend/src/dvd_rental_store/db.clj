@@ -81,3 +81,41 @@ LEFT JOIN city AS ci ON a.city_id = ci.city_id
 LEFT JOIN country AS co ON ci.country_id = co.country_id
 GROUP BY cu.store_id, ci.city, co.country
 "]))
+
+;;; -------------- ;;;
+;;; Film functions ;;;
+;;; -------------- ;;;
+
+(defn top-ten-films-by-volume
+  "Return the top-ten most rented films."
+  [conn]
+  (jdbc/execute! conn ["
+SELECT
+  f.film_id,
+  f.title,
+  COUNT(p.rental_id) AS volume
+FROM payment AS p
+LEFT JOIN rental AS r ON p.rental_id = r.rental_id
+LEFT JOIN inventory AS i ON r.inventory_id = i.inventory_id
+LEFT JOIN film AS f ON i.film_id = f.film_id
+GROUP BY f.film_id, f.title
+ORDER BY volume DESC
+LIMIT 10;
+"]))
+
+(defn top-ten-films-by-revenue
+  "Return the top-ten films that generate more revenue."
+  [conn]
+  (jdbc/execute! conn ["
+SELECT
+  f.film_id,
+  f.title,
+  SUM(p.amount) AS revenue
+FROM payment AS p
+LEFT JOIN rental AS r ON p.rental_id = r.rental_id
+LEFT JOIN inventory AS i ON r.inventory_id = i.inventory_id
+LEFT JOIN film AS f ON i.film_id = f.film_id
+GROUP BY f.film_id, f.title
+ORDER BY revenue DESC
+LIMIT 10;
+"]))
