@@ -28,8 +28,7 @@
   "Returns the total revenue of all stores."
   [conn]
   (jdbc/execute-one! conn ["
-SELECT
-    SUM(amount) AS total_revenue
+SELECT SUM(amount) AS total_revenue
 FROM payment
 "]))
 
@@ -37,9 +36,9 @@ FROM payment
   "Returns the revenue by month of all stores."
   [conn]
   (jdbc/execute! conn ["
-SELECT
-    EXTRACT(MONTH FROM payment_date)::INTEGER AS month,
-    SUM(amount) AS revenue
+SELECT EXTRACT(MONTH
+               FROM payment_date)::INTEGER AS month,
+       SUM(amount) AS revenue
 FROM payment
 GROUP BY month
 ORDER BY month
@@ -49,25 +48,28 @@ ORDER BY month
   "Returns the revenue by week of all stores."
   [conn]
   (jdbc/execute! conn ["
-SELECT
-    EXTRACT(WEEK FROM payment_date)::INTEGER AS week,
-    SUM(amount) AS revenue
+SELECT EXTRACT(WEEK
+               FROM payment_date)::INTEGER AS week,
+       SUM(amount) AS revenue
 FROM payment
 GROUP BY week
-ORDER BY week
+ORDER BY week;
 "]))
 
 (defn revenue-by-day
   "Returns the revenue by day of all stores."
   [conn]
   (jdbc/execute! conn ["
-SELECT 
-    EXTRACT(MONTH FROM payment_date)::INTEGER AS month,
-    EXTRACT(DAY FROM payment_date)::INTEGER AS day,
-    SUM(amount) AS revenue
+SELECT EXTRACT(MONTH
+               FROM payment_date)::INTEGER AS month,
+       EXTRACT(DAY
+               FROM payment_date)::INTEGER AS day,
+       SUM(amount) AS revenue
 FROM payment
-GROUP BY month, day
-ORDER BY month, day
+GROUP BY month,
+         day
+ORDER BY month,
+         day
 "]))
 
 (defn revenue-by-store
@@ -97,16 +99,12 @@ GROUP BY store
   "Returns the top-ten most rented films."
   [conn]
   (jdbc/execute! conn ["
-SELECT
-    title,
-    COUNT(rental_id) AS volume
+SELECT title,
+       COUNT(rental_id) AS volume
 FROM payment
-LEFT JOIN rental
-    USING(rental_id)
-LEFT JOIN inventory
-    USING(inventory_id)
-LEFT JOIN film
-    USING(film_id)
+LEFT JOIN rental USING(rental_id)
+LEFT JOIN inventory USING(inventory_id)
+LEFT JOIN film USING(film_id)
 GROUP BY title
 ORDER BY volume DESC
 LIMIT 10
@@ -116,16 +114,12 @@ LIMIT 10
   "Returns the top-ten films that generate more revenue."
   [conn]
   (jdbc/execute! conn ["
-SELECT
-    title,
-    SUM(rental_id) AS revenue
+SELECT title,
+       SUM(rental_id) AS revenue
 FROM payment
-LEFT JOIN rental
-    USING(rental_id)
-LEFT JOIN inventory
-    USING(inventory_id)
-LEFT JOIN film
-    USING(film_id)
+LEFT JOIN rental USING(rental_id)
+LEFT JOIN inventory USING(inventory_id)
+LEFT JOIN film USING(film_id)
 GROUP BY title
 ORDER BY revenue DESC
 LIMIT 10
@@ -135,12 +129,10 @@ LIMIT 10
   "Returns the number of films in each category."
   [conn]
   (jdbc/execute! conn ["
-SELECT
-    c.name as category,
-    COUNT(fc.film_id) AS number_of_films
+SELECT c.name as category,
+       COUNT(fc.film_id) AS number_of_films
 FROM film_category AS fc
-LEFT JOIN category AS C
-    USING(category_id)
+LEFT JOIN category AS C USING(category_id)
 GROUP BY category
 ORDER BY number_of_films DESC
 "]))
