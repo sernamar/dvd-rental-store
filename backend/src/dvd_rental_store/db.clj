@@ -74,23 +74,19 @@ ORDER BY month, day
   "Returns the total revenue by store."
   [conn]
   (jdbc/execute! conn ["
-SELECT
-    cu.store_id, 
-    ci.city,
-    co.country,
-    SUM(p.amount) AS revenue
-FROM payment AS p
-LEFT JOIN customer AS cu ON
-    p.customer_id = cu.customer_id
-LEFT JOIN store AS s ON
-    cu.store_id = s.store_id
-LEFT JOIN address AS a ON
-    s.address_id = a.address_id
-LEFT JOIN city AS ci ON
-    a.city_id = ci.city_id
-LEFT JOIN country AS co ON
-    ci.country_id = co.country_id
-GROUP BY cu.store_id, ci.city, co.country
+WITH store_details AS
+  (SELECT store_id,
+          concat(city, ' (', country, ')') AS name
+   FROM store
+   LEFT JOIN address USING(address_id)
+   LEFT JOIN city USING(city_id)
+   LEFT JOIN country USING(country_id))
+SELECT name AS store,
+       SUM(amount) AS revenue
+FROM payment
+LEFT JOIN customer USING(customer_id)
+LEFT JOIN store_details USING(store_id)
+GROUP BY store
 "]))
 
 ;;; -------------- ;;;
