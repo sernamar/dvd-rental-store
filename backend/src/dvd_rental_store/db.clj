@@ -136,3 +136,39 @@ LEFT JOIN category USING(category_id)
 GROUP BY category
 ORDER BY number_of_films DESC
 "]))
+
+
+;;; ------------------ ;;;
+;;; Category functions ;;;
+;;; ------------------ ;;;
+
+(defn top-categories-by-volume
+  "Returns the top categories by volume."
+  [conn]
+  (jdbc/execute! conn ["
+SELECT NAME AS category,
+       COUNT(rental_id) AS volume
+FROM rental
+LEFT JOIN inventory USING(inventory_id)
+LEFT JOIN film USING(film_id)
+LEFT JOIN film_category USING(film_id)
+LEFT JOIN category USING(category_id)
+GROUP BY category
+ORDER BY volume DESC
+"]))
+
+(defn top-categories-by-revenue
+  "Returns the top categories by revenue."
+  [conn]
+  (jdbc/execute! conn ["
+SELECT NAME AS category,
+       SUM(amount) AS volume
+FROM payment
+LEFT JOIN rental USING(rental_id)
+LEFT JOIN inventory USING(inventory_id)
+LEFT JOIN film USING(film_id)
+LEFT JOIN film_category USING(film_id)
+LEFT JOIN category USING(category_id)
+GROUP BY category
+ORDER BY volume DESC
+"]))
