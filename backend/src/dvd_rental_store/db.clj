@@ -129,10 +129,10 @@ LIMIT 10
   "Returns the number of films in each category."
   [conn]
   (jdbc/execute! conn ["
-SELECT c.name as category,
-       COUNT(fc.film_id) AS number_of_films
-FROM film_category AS fc
-LEFT JOIN category AS C USING(category_id)
+SELECT name as category,
+       COUNT(film_id) AS number_of_films
+FROM film_category
+LEFT JOIN category USING(category_id)
 GROUP BY category
 ORDER BY number_of_films DESC
 "]))
