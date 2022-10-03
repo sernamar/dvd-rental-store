@@ -101,8 +101,7 @@ GROUP BY store
   (jdbc/execute! conn ["
 SELECT title,
        COUNT(rental_id) AS volume
-FROM payment
-LEFT JOIN rental USING(rental_id)
+FROM rental
 LEFT JOIN inventory USING(inventory_id)
 LEFT JOIN film USING(film_id)
 GROUP BY title
