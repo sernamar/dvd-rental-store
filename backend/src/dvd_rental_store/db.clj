@@ -161,7 +161,7 @@ ORDER BY volume DESC
   [conn]
   (jdbc/execute! conn ["
 SELECT NAME AS category,
-       SUM(amount) AS volume
+       SUM(amount) AS revenue
 FROM payment
 LEFT JOIN rental USING(rental_id)
 LEFT JOIN inventory USING(inventory_id)
