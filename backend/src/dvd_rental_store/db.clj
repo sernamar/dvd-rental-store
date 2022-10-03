@@ -230,7 +230,7 @@ LEFT JOIN film USING(film_id)
 LEFT JOIN film_category USING(film_id)
 LEFT JOIN category USING(category_id)
 GROUP BY category
-ORDER BY volume DESC
+ORDER BY revenue DESC
 "]))
 
 ;;; ------------------ ;;;
