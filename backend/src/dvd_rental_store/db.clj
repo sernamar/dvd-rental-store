@@ -190,6 +190,14 @@ GROUP BY category
 ORDER BY number_of_films DESC
 "]))
 
+(defn average-rental-period
+  "Returns the avegare rental period."
+  [conn]
+  (jdbc/execute! conn ["
+SELECT AVG(DATE_PART('day', return_date - rental_date)) as average
+FROM rental
+"]))
+
 ;;; ------------------ ;;;
 ;;; Category functions ;;;
 ;;; ------------------ ;;;
