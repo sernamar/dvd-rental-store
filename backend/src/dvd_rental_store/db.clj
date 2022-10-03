@@ -106,7 +106,7 @@ FROM rental
 (defn volume-by-store
   "Returns the total volume of all stores."
   [conn]
-  (jdbc/execute-one! conn ["
+  (jdbc/execute! conn ["
 WITH store_details AS
   (SELECT store_id,
           concat(city, ' (', country, ')') AS name
@@ -125,7 +125,7 @@ GROUP BY store
 (defn volume-by-month-and-store
   "Returns the volume by month and by store."
   [conn]
-  (jdbc/execute-one! conn ["
+  (jdbc/execute! conn ["
 WITH store_details AS
   (SELECT store_id,
           concat(city, ' (', country, ')') AS name
