@@ -91,6 +91,60 @@ LEFT JOIN store_details USING(store_id)
 GROUP BY store
 "]))
 
+;;; ---------------- ;;;
+;;; Volume functions ;;;
+;;; ---------------- ;;;
+
+(defn volume
+  "Returns the total volume of all stores."
+  [conn]
+  (jdbc/execute-one! conn ["
+SELECT COUNT(rental_id) AS total_volume
+FROM rental
+"]))
+
+(defn volume-by-store
+  "Returns the total volume of all stores."
+  [conn]
+  (jdbc/execute-one! conn ["
+WITH store_details AS
+  (SELECT store_id,
+          concat(city, ' (', country, ')') AS name
+   FROM store
+   LEFT JOIN address USING(address_id)
+   LEFT JOIN city USING(city_id)
+   LEFT JOIN country USING(country_id))
+SELECT NAME AS store,
+       COUNT(rental_id) AS volume
+FROM rental
+LEFT JOIN customer USING(customer_id)
+LEFT JOIN store_details USING(store_id)
+GROUP BY store
+"]))
+
+(defn volume-by-month-and-store
+  "Returns the volume by month and by store."
+  [conn]
+  (jdbc/execute-one! conn ["
+WITH store_details AS
+  (SELECT store_id,
+          concat(city, ' (', country, ')') AS name
+   FROM store
+   LEFT JOIN address USING(address_id)
+   LEFT JOIN city USING(city_id)
+   LEFT JOIN country USING(country_id))
+SELECT store_id,
+       NAME AS store,
+       EXTRACT(MONTH
+               FROM rental_date)::INTEGER AS MONTH,
+       COUNT(rental_id) AS volume
+FROM rental
+LEFT JOIN customer USING(customer_id)
+LEFT JOIN store_details USING(store_id)
+GROUP BY store_id, store, MONTH
+ORDER BY store, MONTH
+"]))
+
 ;;; -------------- ;;;
 ;;; Film functions ;;;
 ;;; -------------- ;;;
