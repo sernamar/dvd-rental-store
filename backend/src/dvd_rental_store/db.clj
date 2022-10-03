@@ -190,7 +190,6 @@ GROUP BY category
 ORDER BY number_of_films DESC
 "]))
 
-
 ;;; ------------------ ;;;
 ;;; Category functions ;;;
 ;;; ------------------ ;;;
@@ -224,4 +223,34 @@ LEFT JOIN film_category USING(film_id)
 LEFT JOIN category USING(category_id)
 GROUP BY category
 ORDER BY volume DESC
+"]))
+
+;;; ------------------ ;;;
+;;; Customer functions ;;;
+;;; ------------------ ;;;
+
+(defn top-customers-by-volume
+  "Returns the top-ten customers that rented most films."
+  [conn]
+  (jdbc/execute! conn ["
+SELECT concat(first_name, ' ', last_name) AS customer,
+       COUNT(rental_id) AS volume
+FROM customer
+LEFT JOIN rental USING(customer_id)
+GROUP BY customer
+ORDER BY volume DESC
+LIMIT 10
+"]))
+
+(defn top-customers-by-revenue
+  "Returns the top-ten customers that spent more money."
+  [conn]
+  (jdbc/execute! conn ["
+SELECT concat(first_name, ' ', last_name) AS customer,
+       SUM(amount) AS total_spent
+FROM customer
+LEFT JOIN payment USING(customer_id)
+GROUP BY customer
+ORDER BY total_spent DESC
+LIMIT 10
 "]))
